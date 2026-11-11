@@ -88,6 +88,7 @@ struct SidebarView: View {
         case .celestrak: Theme.success
         case .satnogs: Theme.warning
         case .cache: Theme.accent
+        case .synthetic: Theme.danger
         case .none: Theme.textTertiary
         }
     }

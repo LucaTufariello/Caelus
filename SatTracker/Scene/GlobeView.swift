@@ -120,6 +120,7 @@ final class GlobeCoordinator: NSObject, SCNSceneRendererDelegate, @unchecked Sen
         let dt = lastFrame == 0 ? 1.0 / 60.0 : min(0.25, max(0, time - lastFrame))
         lastFrame = time
         rig.step(dt: Float(dt))
+        updateFrameRate()
 
         let pair = buffer.pair()
         guard pair.current.count > 0 else { return }
@@ -127,6 +128,20 @@ final class GlobeCoordinator: NSObject, SCNSceneRendererDelegate, @unchecked Sen
                           current: pair.current,
                           alpha: Self.interpolationAlpha(previous: pair.previous,
                                                          current: pair.current))
+    }
+
+    /// 60 fps while the camera is moving, 30 fps once it has settled.
+    ///
+    /// Only the camera needs the full rate; the point cloud is interpolated
+    /// between one-hertz snapshots and moves a fraction of a pixel per frame.
+    /// Halving the idle rate halves the render cost of a background globe.
+    private func updateFrameRate() {
+        let target = rig.isSettled() ? 30 : 60
+        guard view?.preferredFramesPerSecond != target else { return }
+        // SceneKit wants this on the main thread; the render thread only asks.
+        DispatchQueue.main.async { [weak view] in
+            view?.preferredFramesPerSecond = target
+        }
     }
 
     /// Fraction of the way from `previous` to `current` at the present instant.

@@ -249,6 +249,20 @@ final class CameraRig: @unchecked Sendable {
         lock.withLock { $0.current.distance }
     }
 
+    /// True when the eased pose has caught its target.
+    ///
+    /// The render loop uses this to drop from 60 to 30 fps once the camera has
+    /// stopped: satellites move well under a pixel per second at any zoom, so
+    /// the lower rate is invisible, while dragging stays at the full rate.
+    func isSettled() -> Bool {
+        lock.withLock { state in
+            abs(state.target.distance - state.current.distance) < 0.002
+                && abs(state.target.latitude - state.current.latitude) < 0.01
+                && abs(Self.shortestDelta(from: state.current.longitude,
+                                          to: state.target.longitude)) < 0.01
+        }
+    }
+
     func currentPose() -> Pose {
         lock.withLock { $0.current }
     }

@@ -135,6 +135,9 @@ enum DataProvenance: String, Sendable, Codable {
     case celestrak
     case satnogs
     case cache
+    /// QA mode: generated elements, not real satellites. Surfaced in the danger
+    /// colour everywhere the catalog's origin is reported.
+    case synthetic
     case none
 }
 

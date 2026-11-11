@@ -19,6 +19,31 @@ final class PropagationTests: XCTestCase {
 
     // MARK: - Single object
 
+    /// SatelliteKit reports longitude in 0…360; the UI and every formatter
+    /// expect −180…180. Sample a whole orbit so the wrap is exercised whatever
+    /// time the suite happens to run.
+    func testLongitudeIsAlwaysWrapped() async throws {
+        let engine = PropagationEngine()
+        await engine.load(records(TLEFixtures.issDocument))
+
+        let start = Date()
+        for step in 0..<24 {
+            let date = start.addingTimeInterval(Double(step) * 300)
+            let state = await engine.state(at: 0, date: date, site: .rome)
+            let unwrapped = try XCTUnwrap(state)
+            XCTAssertGreaterThanOrEqual(unwrapped.longitude, -180, "step \(step)")
+            XCTAssertLessThanOrEqual(unwrapped.longitude, 180, "step \(step)")
+        }
+
+        let samples = await engine.trackSamples(at: 0, date: start,
+                                                halfSpanMinutes: 95, stepSeconds: 60)
+        XCTAssertFalse(samples.isEmpty)
+        for sample in samples {
+            XCTAssertGreaterThanOrEqual(sample.longitude, -180)
+            XCTAssertLessThanOrEqual(sample.longitude, 180)
+        }
+    }
+
     func testISSPropagatesToAPlausibleOrbit() async throws {
         let engine = PropagationEngine()
         await engine.load(records(TLEFixtures.issDocument))

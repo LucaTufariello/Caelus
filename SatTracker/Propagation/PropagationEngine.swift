@@ -235,7 +235,7 @@ actor PropagationEngine {
 
         return SatelliteState(position: GeoMath.scenePosition(lla),
                               latitude: lla.lat,
-                              longitude: lla.lon,
+                              longitude: GeoMath.wrapLongitude(lla.lon),
                               altitudeKm: lla.alt,
                               velocityKmS: velocity,
                               sunlit: sunlit,
@@ -288,7 +288,7 @@ actor PropagationEngine {
             if let lla = try? satellite.geoPosition(julianDays: jd) {
                 samples.append(TrackSample(offsetMinutes: offset,
                                            latitude: lla.lat,
-                                           longitude: lla.lon,
+                                           longitude: GeoMath.wrapLongitude(lla.lon),
                                            altitudeKm: lla.alt))
             }
             offset += stepMinutes

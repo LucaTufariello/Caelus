@@ -51,6 +51,9 @@ actor CatalogService {
 
     /// Build a catalog from whatever is on disk. Returns nil when nothing is cached.
     nonisolated func loadFromCache() -> LoadResult? {
+        // Synthetic mode never reads the cache: the whole point is a catalog of
+        // known size, independent of what happens to be on disk.
+        guard !SyntheticCatalog.isEnabled else { return nil }
         let (texts, meta) = cache.loadAll()
         guard !texts.isEmpty else { return nil }
         let result = Self.assemble(texts: texts, meta: meta, failures: [:], updated: [])
@@ -61,6 +64,17 @@ actor CatalogService {
     // MARK: - Refresh
 
     func refresh(force: Bool) async -> LoadResult {
+        if SyntheticCatalog.isEnabled {
+            let (catalog, diagnostics) = SyntheticCatalog.make(count: SyntheticCatalog.requestedCount)
+            return LoadResult(catalog: catalog,
+                              diagnostics: diagnostics,
+                              provenance: .synthetic,
+                              groupMeta: [:],
+                              updatedGroups: [],
+                              checkedAt: Date(),
+                              isDegraded: false)
+        }
+
         var meta = cache.loadMeta()
         var texts: [String: String] = [:]
         var failures: [String: String] = [:]

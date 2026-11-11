@@ -106,6 +106,7 @@ final class AppModel {
     // MARK: - Lifecycle
 
     init() {
+        StartupClock.mark("model created")
         loadPreferences()
         startFromCache()
     }
@@ -120,6 +121,7 @@ final class AppModel {
             let cached = service.loadFromCache()
             await MainActor.run { [weak self] in
                 guard let self else { return }
+                StartupClock.mark("cache read (\(cached?.catalog.count ?? 0) objects)")
                 if let cached {
                     self.apply(cached)
                 }
@@ -161,6 +163,7 @@ final class AppModel {
         guard result.catalog.count > 0 else { return }
 
         if isFirstLoad {
+            StartupClock.mark("first catalog applied (\(result.catalog.count) objects)")
             buildGlobe()
             Task { await engine.load(result.catalog.records) }
             startTicking()
@@ -219,6 +222,8 @@ final class AppModel {
         let now = Date()
         let snapshot = await engine.tick(at: now)
         buffer.push(snapshot)
+        StartupClock.markOnce("first tick",
+                              "first tick (\(Int(snapshot.duration * 1000)) ms, \(snapshot.valid.filter { $0 }.count) valid)")
 
         lastTick = now
         snapshotDuration = snapshot.duration

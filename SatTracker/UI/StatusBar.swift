@@ -125,6 +125,7 @@ struct StatusBar: View {
         case .celestrak: "LIVE"
         case .satnogs: "SATNOGS"
         case .cache: "CACHED"
+        case .synthetic: "SYNTHETIC"
         case .none: "OFFLINE"
         }
     }
@@ -134,6 +135,7 @@ struct StatusBar: View {
         case .celestrak: Theme.success
         case .satnogs: Theme.warning
         case .cache: Theme.accent
+        case .synthetic: Theme.danger
         case .none: Theme.textTertiary
         }
     }

@@ -320,6 +320,7 @@ struct SettingsView: View {
         case .celestrak: "CelesTrak GP"
         case .satnogs: "SatNOGS"
         case .cache: "Local cache"
+        case .synthetic: "Synthetic (QA)"
         case .none: "No data"
         }
     }
