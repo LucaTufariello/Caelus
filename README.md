@@ -148,16 +148,18 @@ latitude/longitude grid.
 ## Performance
 
 Budgets from the spec, and what the current Release build measures on an
-Apple-silicon machine with a 16 000-object catalog:
+Apple-silicon machine. The live figures are from a real catalog of 10 784
+objects (the `starlink` group plus the tagging groups); the stress figures are
+from a 16 000-object synthetic catalog.
 
 | Metric | Budget | Measured |
 | --- | --- | --- |
-| 16 000 objects propagated per tick | < 250 ms | **4.3–5.0 ms** (`PropagationTests`), 9–11 ms in the status bar |
-| Cold start, cached | < 2 s | **0.28 s** to first tick with the real cache; **0.72 s** with 16 000 objects |
+| 16 000 objects propagated per tick | < 250 ms | **4.3–5.0 ms** (`PropagationTests`), 5 ms live |
+| Cold start, cached | < 2 s | **0.29 s** to first tick with 10 784 objects |
 | Cold start, network | < 8 s | dominated by the download |
-| Steady-state CPU | < 15 % | **8.5–12.6 %** at 16 000 objects |
+| Steady-state CPU | < 15 % | **4.0–5.5 %** live; 8.5–12.6 % at 16 000 |
 | Camera | 60 fps | 60 fps while the camera moves, 30 fps once it settles |
-| Memory | < 250 MB | **219 MB** with a 16 000-object catalog |
+| Memory | < 250 MB | **226 MB** live; 219 MB at 16 000 |
 
 The startup figures come from `SATTRAKER_STARTUP_LOG=1` (see *Development
 hooks*); memory is `vmmap -summary`'s physical footprint, not RSS.
@@ -282,7 +284,7 @@ live under
 | Requirement | Status |
 | --- | --- |
 | `make run` opens the app | ✅ |
-| Globe shows ≥ 10 000 satellites | ✅ verified at 16 000 (see note) |
+| Globe shows ≥ 10 000 satellites | ✅ 10 784 real objects |
 | Positions update at ≥ 1 Hz | ✅ 1 Hz tick, interpolated to 60 fps |
 | Clicking shows details, orbit path, ground track | ✅ |
 | Searching "ISS" and flying to it | ✅ |
@@ -292,10 +294,11 @@ live under
 | `make test` passes | ✅ 89 tests |
 | No Electron, Tauri or web view | ✅ |
 
-> **Note on catalog size.** The 16 000-object render, propagation and memory
-> path was verified with `SATTRAKER_SYNTHETIC_CATALOG=16000`, which is what the
-> performance table above was measured against. During development CelesTrak's
-> per-client two-hour window was closed, so the live cache held only the small
-> tagging groups (165 objects) and a `GROUP=active` download could not be
-> completed. The app renders whatever the source provides; the full catalog
-> appears as soon as that download succeeds.
+> **Note on catalog size.** During development CelesTrak's per-client two-hour
+> window was closed for `GROUP=active`, so the base catalog could not be
+> downloaded. The `starlink` group was available and yields 10 619 objects on
+> its own, which together with `stations`, `gps-ops`, `weather` and `science`
+> gives the 10 784-object catalog the figures above were measured against. When
+> `GROUP=active` succeeds, the app replaces this with the full ~15 900-object
+> catalog; the 16 000-object render and propagation path is exercised by
+> `SATTRAKER_SYNTHETIC_CATALOG=16000` and by `PropagationTests.testPerformance`.
