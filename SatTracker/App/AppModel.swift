@@ -652,9 +652,12 @@ final class AppModel {
                 globeScene?.focus(latitude: parts[0], longitude: parts[1], distance: Float(parts[2]))
             }
         }
+        if let query = ProcessInfo.processInfo.environment["SATTRAKER_SNAPSHOT_QUERY"] {
+            self.query = query
+        }
         if ProcessInfo.processInfo.environment["SATTRAKER_SNAPSHOT_SELECT"] == "1",
            let index = searchResults.first {
-            select(index)
+            select(index, fly: true)
         }
 
         Task {
