@@ -42,7 +42,13 @@ enum EarthNode {
 
     /// UV sphere whose texture coordinates match `GeoMath.unitVector`.
     ///
-    /// u = (lon + 180)/360, v = (lat + 90)/180, with lon −180 at u = 0.
+    /// u = (lon + 180)/360, with lon −180 at u = 0.
+    ///
+    /// V is **inverted** relative to the usual (lat + 90)/180: SceneKit samples
+    /// an `NSImage`-backed texture with v = 0 at the image's *top* row, while an
+    /// equirectangular map has its north pole in that row. Without the flip the
+    /// globe renders with latitudes mirrored — 30°S showing Greenland.
+    ///
     /// Winding is counter-clockwise seen from outside.
     static func sphereGeometry(radius: Float, segments: Int, rings: Int) -> SCNGeometry {
         let columns = segments + 1
@@ -64,7 +70,7 @@ enum EarthNode {
                 let unit = GeoMath.unitVector(lat: lat, lon: lon)
                 vertices.append(SCNVector3(unit.x * radius, unit.y * radius, unit.z * radius))
                 normals.append(SCNVector3(unit.x, unit.y, unit.z))
-                uvs.append(CGPoint(x: CGFloat(u), y: CGFloat(v)))
+                uvs.append(CGPoint(x: CGFloat(u), y: CGFloat(1 - v)))
             }
         }
 

@@ -143,6 +143,15 @@ is no offset to calibrate, and the constant is kept as documentation of that
 decision. `GeoMathTests` asserts all three axis cases plus a round-trip over a
 latitude/longitude grid.
 
+One detail is not derivable from the frame convention: SceneKit samples an
+`NSImage`-backed texture with **v = 0 at the top row**, while an equirectangular
+map has its north pole in that row. The sphere therefore stores
+`v = 1 − (lat + 90)/180`. Without the inversion the geometry is still correct —
+satellites stay where the maths puts them — but the continents render mirrored
+across the equator, so 30°S shows Greenland. `EarthNodeTests` asserts the
+convention and then samples the shipped texture at known places (the USA is
+land, the South Pacific is water) so the two cannot drift apart again.
+
 ---
 
 ## Performance
@@ -291,7 +300,7 @@ live under
 | Passes for Rome match n2yo within ~1 min | ✅ ±30 s on rise/peak/set |
 | Favourites persist | ✅ `UserDefaults` |
 | Relaunch offline works from cache | ✅ |
-| `make test` passes | ✅ 89 tests |
+| `make test` passes | ✅ 91 tests |
 | No Electron, Tauri or web view | ✅ |
 
 > **Note on catalog size.** During development CelesTrak's per-client two-hour
