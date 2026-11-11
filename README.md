@@ -252,7 +252,7 @@ SatTracker/
 
 ## Development hooks
 
-Four environment variables exist for measurement and screenshots. None of them
+Seven environment variables exist for measurement and screenshots. None of them
 change behaviour unless set.
 
 | Variable | Effect |
@@ -261,7 +261,8 @@ change behaviour unless set.
 | `SATTRAKER_STARTUP_LOG=1` | Prints one `[startup]` line per boot phase to stderr. |
 | `SATTRAKER_SNAPSHOT=<path>` | Renders the window to a PNG after the first tick, then quits. |
 | `SATTRAKER_SNAPSHOT_POSE=lat,lon,distance` | Camera pose for that capture. |
-| `SATTRAKER_SNAPSHOT_SELECT=1` | Selects the first search result before capturing. |
+| `SATTRAKER_SNAPSHOT_QUERY=<text>` | Types *text* into the search field before capturing. |
+| `SATTRAKER_SNAPSHOT_SELECT=1` | Selects the first search result, flying the camera to it. |
 | `SATTRAKER_SNAPSHOT_SCENE=<path>` | Also dumps the raw Metal scene, without the UI chrome. |
 
 **Synthetic mode is QA only.** It exists because the real catalog depends on
