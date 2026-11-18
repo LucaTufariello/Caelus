@@ -1,17 +1,17 @@
-# SatTracker — build, run and test helpers.
+# Caelus — build, run and test helpers.
 #
 # The SwiftPM cache in ~/Library/Caches is not writable from the build sandbox,
 # so every xcodebuild invocation carries workspace-local package paths.
 
-PROJECT      := SatTracker.xcodeproj
-SCHEME       := SatTracker
+PROJECT      := Caelus.xcodeproj
+SCHEME       := Caelus
 CONFIG       ?= Debug
 ROOT         := $(CURDIR)
 BUILD_DIR    := .build
 DERIVED      := $(ROOT)/$(BUILD_DIR)
 PKG_CHECKOUT := $(DERIVED)/SourcePackages
 PKG_CACHE    := $(DERIVED)/swiftpm-cache
-APP          := $(DERIVED)/Build/Products/$(CONFIG)/SatTracker.app
+APP          := $(DERIVED)/Build/Products/$(CONFIG)/Caelus.app
 
 # Absolute paths matter here: xcodebuild silently resolves nothing when the
 # package directories are given relative to the project.
@@ -38,12 +38,12 @@ build: resolve
 run: build
 	@open $(APP)
 
-# Unit tests. Network-backed tests are opt-in via SATTRAKER_NETWORK_TESTS=1.
+# Unit tests. The suite runs fully offline.
 test: resolve
 	@$(XCB) test -destination 'platform=macOS,arch=arm64'
 
 test-unit: resolve
-	@$(XCB) test -destination 'platform=macOS,arch=arm64' -only-testing:SatTrackerTests
+	@$(XCB) test -destination 'platform=macOS,arch=arm64' -only-testing:CaelusTests
 
 clean:
 	@rm -rf $(BUILD_DIR)/Build
@@ -52,7 +52,7 @@ distclean:
 	@rm -rf $(BUILD_DIR) $(PROJECT)
 
 icon:
-	@swift Tools/make_icon.swift SatTracker/Resources/Assets.xcassets/AppIcon.appiconset
+	@swift Tools/make_icon.swift Caelus/Resources/Assets.xcassets/AppIcon.appiconset
 
 open:
 	@open $(PROJECT)

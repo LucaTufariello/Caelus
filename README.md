@@ -1,4 +1,4 @@
-# SatTracker
+# Caelus
 
 A native macOS app that renders the live orbital catalog on a 3D Earth. Every
 object in the CelesTrak GP catalog is propagated with SGP4 once a second and
@@ -21,7 +21,7 @@ make clean    # remove build products
 
 Requirements: macOS 14 or later on Apple silicon, Xcode 16 or later, and
 [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
-`SatTracker.xcodeproj` is generated from `project.yml` and is not checked in.
+`Caelus.xcodeproj` is generated from `project.yml` and is not checked in.
 
 The first launch needs a network connection to download the element sets; after
 that the app starts from its cache and works offline.
@@ -86,7 +86,7 @@ Groups fetched: `active` (the base catalog, ~15 900 objects), plus `stations`,
 `STARLINK` name prefix inside `active`; the dedicated `starlink` group is only
 requested if that yields fewer than 5 000 objects.
 
-Requests carry `User-Agent: SatTracker/0.1 (macOS; personal use)`.
+Requests carry `User-Agent: Caelus/0.1 (macOS; personal use)`.
 
 ### The two-hour window
 
@@ -102,7 +102,7 @@ A group is only fetched when its cache entry is older than the recheck interval,
 or when you press ⌘R.
 
 Each group's text and metadata are cached under
-`~/Library/Containers/com.lucatufariello.SatTracker/Data/Library/Application Support/SatTracker/`:
+`~/Library/Containers/com.lucatufariello.Caelus/Data/Library/Application Support/Caelus/`:
 
 ```
 tle/active.tle    tle/stations.tle    tle/starlink.tle    …
@@ -170,7 +170,7 @@ from a 16 000-object synthetic catalog.
 | Camera | 60 fps | 60 fps while the camera moves, 30 fps once it settles |
 | Memory | < 250 MB | **226 MB** live; 219 MB at 16 000 |
 
-The startup figures come from `SATTRAKER_STARTUP_LOG=1` (see *Development
+The startup figures come from `CAELUS_STARTUP_LOG=1` (see *Development
 hooks*); memory is `vmmap -summary`'s physical footprint, not RSS.
 
 `PropagationTests.testPerformance` enforces the first row: it builds a 16 000
@@ -208,8 +208,8 @@ How the speed is achieved:
 ## Architecture
 
 ```
-SatTracker/
-  App/           SatTrackerApp, AppModel (the single source of truth), Commands
+Caelus/
+  App/           CaelusApp, AppModel (the single source of truth), Commands
   Data/          CelesTrak client, SatNOGS fallback, cache, TLE parser, catalog
   Propagation/   SGP4 engine, pass predictor, solar geometry, frame maths
   Scene/         GlobeScene, EarthNode, SatelliteLayer, OrbitTrackLayer, observer
@@ -257,13 +257,13 @@ change behaviour unless set.
 
 | Variable | Effect |
 | --- | --- |
-| `SATTRAKER_SYNTHETIC_CATALOG=<n>` | Loads *n* generated satellites instead of contacting any source. |
-| `SATTRAKER_STARTUP_LOG=1` | Prints one `[startup]` line per boot phase to stderr. |
-| `SATTRAKER_SNAPSHOT=<path>` | Renders the window to a PNG after the first tick, then quits. |
-| `SATTRAKER_SNAPSHOT_POSE=lat,lon,distance` | Camera pose for that capture. |
-| `SATTRAKER_SNAPSHOT_QUERY=<text>` | Types *text* into the search field before capturing. |
-| `SATTRAKER_SNAPSHOT_SELECT=1` | Selects the first search result, flying the camera to it. |
-| `SATTRAKER_SNAPSHOT_SCENE=<path>` | Also dumps the raw Metal scene, without the UI chrome. |
+| `CAELUS_SYNTHETIC_CATALOG=<n>` | Loads *n* generated satellites instead of contacting any source. |
+| `CAELUS_STARTUP_LOG=1` | Prints one `[startup]` line per boot phase to stderr. |
+| `CAELUS_SNAPSHOT=<path>` | Renders the window to a PNG after the first tick, then quits. |
+| `CAELUS_SNAPSHOT_POSE=lat,lon,distance` | Camera pose for that capture. |
+| `CAELUS_SNAPSHOT_QUERY=<text>` | Types *text* into the search field before capturing. |
+| `CAELUS_SNAPSHOT_SELECT=1` | Selects the first search result, flying the camera to it. |
+| `CAELUS_SNAPSHOT_SCENE=<path>` | Also dumps the raw Metal scene, without the UI chrome. |
 
 **Synthetic mode is QA only.** It exists because the real catalog depends on
 CelesTrak's two-hour window, which makes the 16 000-object render path
@@ -275,7 +275,7 @@ as well-formed as downloaded ones.
 
 The sandbox only permits writes inside the app container, so snapshot paths must
 live under
-`~/Library/Containers/com.lucatufariello.SatTracker/Data/`.
+`~/Library/Containers/com.lucatufariello.Caelus/Data/`.
 
 ---
 
@@ -311,4 +311,4 @@ live under
 > gives the 10 784-object catalog the figures above were measured against. When
 > `GROUP=active` succeeds, the app replaces this with the full ~15 900-object
 > catalog; the 16 000-object render and propagation path is exercised by
-> `SATTRAKER_SYNTHETIC_CATALOG=16000` and by `PropagationTests.testPerformance`.
+> `CAELUS_SYNTHETIC_CATALOG=16000` and by `PropagationTests.testPerformance`.

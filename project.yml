@@ -1,4 +1,4 @@
-name: SatTracker
+name: Caelus
 
 options:
   bundleIdPrefix: com.lucatufariello
@@ -30,62 +30,62 @@ settings:
     CLANG_ENABLE_MODULES: YES
 
 targets:
-  SatTracker:
+  Caelus:
     type: application
     platform: macOS
     sources:
-      - path: SatTracker
+      - path: Caelus
     dependencies:
       - package: SatelliteKit
         product: SatelliteKit
     settings:
       base:
-        PRODUCT_NAME: SatTracker
-        PRODUCT_BUNDLE_IDENTIFIER: com.lucatufariello.SatTracker
+        PRODUCT_NAME: Caelus
+        PRODUCT_BUNDLE_IDENTIFIER: com.lucatufariello.Caelus
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: SatTracker
+        INFOPLIST_KEY_CFBundleDisplayName: Caelus
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
-        INFOPLIST_KEY_NSLocationUsageDescription: "SatTracker uses your location to predict when satellites pass over you."
-        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "SatTracker uses your location to predict when satellites pass over you."
+        INFOPLIST_KEY_NSLocationUsageDescription: "Caelus uses your location to predict when satellites pass over you."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Caelus uses your location to predict when satellites pass over you."
         INFOPLIST_KEY_NSHumanReadableCopyright: "Personal use."
         INFOPLIST_KEY_LSMinimumSystemVersion: "14.0"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        CODE_SIGN_ENTITLEMENTS: SatTracker/Resources/SatTracker.entitlements
+        CODE_SIGN_ENTITLEMENTS: Caelus/Resources/Caelus.entitlements
         ENABLE_APP_SANDBOX: YES
         COMBINE_HIDPI_IMAGES: YES
         LD_RUNPATH_SEARCH_PATHS:
           - "$(inherited)"
           - "@executable_path/../Frameworks"
 
-  SatTrackerTests:
+  CaelusTests:
     type: bundle.unit-test
     platform: macOS
     sources:
-      - path: SatTrackerTests
+      - path: CaelusTests
     dependencies:
-      - target: SatTracker
+      - target: Caelus
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.lucatufariello.SatTrackerTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.lucatufariello.CaelusTests
         GENERATE_INFOPLIST_FILE: YES
         BUNDLE_LOADER: "$(TEST_HOST)"
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SatTracker.app/Contents/MacOS/SatTracker"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Caelus.app/Contents/MacOS/Caelus"
 
 schemes:
-  SatTracker:
+  Caelus:
     build:
       targets:
-        SatTracker: all
-        SatTrackerTests: [test]
+        Caelus: all
+        CaelusTests: [test]
     run:
       config: Debug
     test:
       config: Debug
       gatherCoverageData: false
       targets:
-        - SatTrackerTests
+        - CaelusTests
     archive:
       config: Release

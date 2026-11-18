@@ -1,6 +1,6 @@
 #!/usr/bin/env swift
 //
-//  make_icon.swift — renders the SatTracker app icon at every macOS size.
+//  make_icon.swift — renders the Caelus app icon at every macOS size.
 //  Usage: swift Tools/make_icon.swift <AppIcon.appiconset path>
 //
 //  The mark: a lit globe with an orbital ellipse that passes behind it and in
@@ -14,7 +14,7 @@ import Foundation
 
 let outDir = CommandLine.arguments.count > 1
     ? CommandLine.arguments[1]
-    : "SatTracker/Resources/Assets.xcassets/AppIcon.appiconset"
+    : "Caelus/Resources/Assets.xcassets/AppIcon.appiconset"
 
 let S: CGFloat = 1024
 
@@ -180,7 +180,7 @@ ctx.strokePath()
 let master = ctx.makeImage()!
 let rep = NSBitmapImageRep(cgImage: master)
 let png = rep.representation(using: .png, properties: [:])!
-let masterURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("sattracker_icon_1024.png")
+let masterURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("caelus_icon_1024.png")
 try png.write(to: masterURL)
 
 let sizes = [16, 32, 64, 128, 256, 512, 1024]
