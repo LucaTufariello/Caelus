@@ -1,18 +1,8 @@
-# Xcode / build
-.build/
-DerivedData/
-*.xcodeproj/
-*.xcworkspace/
-xcuserdata/
-*.xcuserstate
+# Build output
+build/
 
 # macOS
 .DS_Store
 
-# SwiftPM
-.swiftpm/
-Package.resolved
-
 # Local scratch
 *.log
-/tmp/
