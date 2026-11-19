@@ -1091,7 +1091,9 @@ std::vector<StarVertex> starVertices(float radius, float screenScale) {
     float perPixel = (std::max(0.05f, _rig.current.distance - 1.0f) * 34.0f) / height;
     perPixel = std::min(1.6f, std::max(0.005f, perPixel));
 
-    _rig.target.latitude += static_cast<float>(dy) * perPixel;
+    // Inverted: dragging up moves the camera south, so the globe follows the
+    // hand. Horizontal dragging already reads as a natural grab.
+    _rig.target.latitude -= static_cast<float>(dy) * perPixel;
     _rig.target.latitude = std::min(89.0f, std::max(-89.0f, _rig.target.latitude));
 
     const float cosine = std::max(0.25f, std::cos(_rig.target.latitude *
